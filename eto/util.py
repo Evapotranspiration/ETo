@@ -1,76 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-Utility functions for Hilltop functions.
+Utility functions.
 """
-from os import path
-from datetime import datetime
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import SafeConfigParser as ConfigParser
+import pandas as pd
 
 
-def parse_dsn(dsn_path):
+def tsreg(ts, freq=None, interp=False):
     """
-    Function to parse a dsn file and all sub-dsn files into paths to hts files. Returns a list of hts paths.
+    Function to regularize a time series object (pandas).
+    The first three indeces must be regular for freq=None!!!
 
-    Parameters
-    ----------
-    dsn_path : str
-        Path to the dsn file.
-
-    Returns
-    -------
-    List of path strings to hts files.
+    ts -- pandas time series dataframe.\n
+    freq -- Either specify the known frequency of the data or use None and
+    determine the frequency from the first three indices.\n
+    interp -- Should linear interpolation be applied on all missing data?
     """
 
-    base_path = path.dirname(dsn_path)
+    if freq is None:
+        freq = pd.infer_freq(ts.index[:3])
+    ts1 = ts.resample(freq).mean()
+    if interp:
+        ts1 = ts1.interpolate('time')
 
-    dsn = ConfigParser()
-    dsn.read(dsn_path)
-    files1 = [os.path.join(base_path, i[1]) for i in dsn.items('Hilltop') if 'file' in i[0]]
-    hts1 = [i for i in files1 if i.endswith('.hts')]
-    dsn1 = [i for i in files1 if i.endswith('.dsn')]
-    while dsn1:
-        for f in dsn1:
-            base_path = path.dirname(f)
-            p1 = ConfigParser()
-            p1.read(f)
-            files1 = [path.join(base_path, i[1]) for i in p1.items('Hilltop') if 'file' in i[0]]
-            hts1.extend([i for i in files1 if i.endswith('.hts')])
-            dsn1.remove(f)
-            dsn1[0:0] = [i for i in files1 if i.endswith('.dsn')]
-    return hts1
-
-
-def pytime_to_datetime(pytime):
-    """
-    Function to convert a PyTime object to a datetime object.
-    """
-
-    dt1 = datetime(year=pytime.year, month=pytime.month, day=pytime.day, hour=pytime.hour, minute=pytime.minute)
-    return dt1
-
-
-def time_switch(x):
-    """
-    Convenience codes to convert for time text to pandas time codes.
-    """
-    return {
-        'min': 'Min',
-        'mins': 'Min',
-        'minute': 'Min',
-        'minutes': 'Min',
-        'hour': 'H',
-        'hours': 'H',
-        'day': 'D',
-        'days': 'D',
-        'week': 'W',
-        'weeks': 'W',
-        'month': 'M',
-        'months': 'M',
-        'year': 'A',
-        'years': 'A',
-        'water year': 'A-JUN',
-        'water years': 'A-JUN',
-    }.get(x, 'A')
+    return ts1

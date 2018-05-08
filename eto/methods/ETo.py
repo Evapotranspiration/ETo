@@ -242,24 +242,24 @@ def fao_eto(df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days
     ## ETo equation
 
     if time_int == 'days':
-#        ETo_Har = 0.0023*(df1['T_mean'] + 17.8)*((df1['T_max'] - df1['T_min']) **0.5)*R_a
-        ETo_FAO = (0.408*Delta*(df1['R_n'] - df1['G']) + gamma*900/(df1['T_mean'] + 273)*U_2*(e_s - e_a))/(Delta + gamma*(1 + 0.34*U_2))
+#        ETo_Har = 0.0023*(self.ts_param['T_mean'] + 17.8)*((self.ts_param['T_max'] - self.ts_param['T_min']) **0.5)*self.ts_param['R_a']
+        ETo_FAO = (0.408*self.ts_param['delta']*(self.ts_param['R_n'] - self.ts_param['G']) + self.ts_param['gamma']*900/(self.ts_param['T_mean'] + 273)*self.ts_param['U_2']*(self.ts_param['e_s'] - self.ts_param['e_a']))/(self.ts_param['delta'] + self.ts_param['gamma']*(1 + 0.34*self.ts_param['U_2']))
     elif time_int == 'hours':
-#        ETo_Har = Series(nan, index=df1.index)
-        ETo_FAO = (0.408*Delta*(df1['R_n'] - df1['G']) + gamma*37/(df1['T_mean'] + 273)*U_2*(e_mean - e_a))/(Delta + gamma*(1 + 0.34*U_2))
+#        ETo_Har = Series(nan, index=self.ts_param.index)
+        ETo_FAO = (0.408*self.ts_param['delta']*(self.ts_param['R_n'] - self.ts_param['G']) + self.ts_param['gamma']*37/(self.ts_param['T_mean'] + 273)*self.ts_param['U_2']*(self.ts_param['e_mean'] - self.ts_param['e_a']))/(self.ts_param['delta'] + self.ts_param['gamma']*(1 + 0.34*self.ts_param['U_2']))
 
     ## Remove extreme values
-#    ETo_Har[ETo_Har > 20] = nan
-#    ETo_Har[ETo_Har < min_ETo] = nan
+#    ETo_Har[ETo_Har > 20] = np.nan
+#    ETo_Har[ETo_Har < min_ETo] = np.nan
 
-    ETo_FAO[ETo_FAO > max_ETo] = nan
-    ETo_FAO[ETo_FAO < min_ETo] = nan
+    ETo_FAO[ETo_FAO > max_ETo] = np.nan
+    ETo_FAO[ETo_FAO < min_ETo] = np.nan
 
     ## Combine results
-#    ETo = concat([ETo_FAO.round(2), ETo_Har.round(2), est_val], axis=1)
-#    ETo.columns = ['ETo_FAO_mm', 'ETo_Har_mm', 'Est_val']
-    ETo = concat([ETo_FAO.round(2), est_val], axis=1)
-    ETo.columns = ['ETo_FAO_mm', 'Est_val']
+#    ETo = concat([ETo_FAO.round(2), ETo_Har.round(2), self.est_val], axis=1)
+#    ETo.columns = ['ETo_FAO_mm', 'ETo_Har_mm', 'self.est_val']
+    ETo = pd.concat([ETo_FAO.round(2), self.est_val], axis=1)
+    ETo.columns = ['ETo_FAO_mm', 'self.est_val']
 
     ## ETo equation with filled holes using interpolation (use with caution)
     if isinstance(fill, str):
@@ -269,7 +269,7 @@ def fao_eto(df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days
 #        ETo_fill = concat([ETo_FAO_fill.round(2), ETo_Har_fill.round(2)], axis=1)
 #        ETo_fill.columns = ['ETo_FAO_fill_mm', 'ETo_Har_fill_mm']
 #        ETo = concat([ETo, ETo_fill], axis=1)
-        ETo = concat([ETo, ETo_FAO_fill.round(2)], axis=1)
+        ETo = pd.concat([ETo, ETo_FAO_fill.round(2)], axis=1)
 
     ## Save data and return
     if isinstance(export, str):
