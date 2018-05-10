@@ -69,6 +69,8 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
         Wind speed at height z (m/s)
     P
         Atmospheric pressure (kPa)
+    e_a
+        Actual Vapour pressure derrived from RH
 
     Parameter estimation
     --------------------
@@ -77,7 +79,11 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     .. [1] Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop evapotranspiration-Guidelines for computing crop water requirements-FAO Irrigation and drainage paper 56. FAO, Rome, 300(9), D05109.
     """
 
-    met_names = np.array(['R_n', 'R_s', 'G', 'T_min', 'T_max', 'T_mean', 'T_dew', 'RH_min', 'RH_max', 'RH_mean', 'n_sun', 'U_z', 'P'])
+    met_names = np.array(['R_n', 'R_s', 'G', 'T_min', 'T_max', 'T_mean', 'T_dew', 'RH_min', 'RH_max', 'RH_mean', 'n_sun', 'U_z', 'P', 'e_a'])
+    if time_int == 'days':
+        self.time_int = 'D'
+    elif time_int == 'hours':
+        self.time_int = 'H'
 
     ####################################
     ##### Set up the DataFrame and estimated values series
@@ -122,7 +128,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
         self.ts_param['delta'] = 4098*(0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean'] + 237.3)))/((self.ts_param['T_mean'] + 237.3)**2)
 
         # e_a if dewpoint temperature is known
-        self.ts_param['e_a'] = 0.6108*np.exp(17.27*self.ts_param['T_dew']/(self.ts_param['T_dew'] + 237.3))
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_dew']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_dew'] + 237.3))
 
         # e_a if min and max temperatures and humidities are known
         self.est_val.loc[self.ts_param['T_dew'].isnull()] = self.est_val.loc[self.ts_param['T_dew'].isnull()] + 10000
@@ -138,7 +144,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
 
     elif time_int == 'hours':
         self.ts_param['e_mean'] = 0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean']+237.3))
-        self.ts_param['e_a'] = self.ts_param['e_mean']*self.ts_param['RH_mean']/100
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_mean']*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100
     else:
         raise ValueError('time_int must be either days or hours.')
 
@@ -205,5 +211,9 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
 
     # or use 2 if wind speed is not known
     self.est_val.loc[self.ts_param['U_z'].isnull()] = self.est_val.loc[self.ts_param['U_z'].isnull()] + 1
-    self.ts_param.loc[self.ts_param['U_z'].isnull(), 'U_z'] = 2
+    self.ts_param.loc[self.ts_param['U_z'].isnull(), 'U_2'] = 2
+
+    #######
+    ## Assign the ET methods
+    self.eto_fao = self._eto_fao
 
