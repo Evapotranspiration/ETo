@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Function to estimate reference ET (ETo) from the FAO 56 paper using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but utilizing the maximum number of available met parameters. The function prioritizes the estimation of specific parameters based on the available input data.
+Function to estimate reference ET (ETo) from the FAO 56 paper using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but utilizing the maximum number of available met parameters.
 """
 import pandas as pd
 import numpy as np
@@ -25,43 +25,8 @@ def eto_fao(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15, export=None):
 
     Returns
     -------
-    DataFrame
-        If fill=False, then the returned DataFrame is two columns of estimated ETo in mm and the parameter estimation values. If fill=True, then the returned DataFrame has an additional column for the filled ETo value in mm.
-
-    Input df
-    --------
-    The input data must be a DataFrame with specific column names according to the met parameter. The column names should be a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but can contain any/all of the following:
-
-    R_n
-        Net radiation (MJ/m2)
-    R_s
-        Incoming shortwave radiation (MJ/m2)
-    G
-        Net soil heat flux (MJ/m2)
-    T_min
-        Minimum Temperature (deg C)
-    T_max
-        Maximum Temperature (deg C)
-    T_mean
-        Mean Temperature (deg C)
-    T_dew
-        Dew point temperature (deg C)
-    RH_min
-        Minimum relative humidity
-    RH_max
-        Maximum relative humidity
-    RH_mean
-        Mean relative humidity
-    n_sun
-        Number of sunshine hours per day
-    U_z
-        Wind speed at height z (m/s)
-    P
-        Atmospheric pressure (kPa)
-
-    Parameter estimation
-    --------------------
-    Parameter estimation values refer to the quality level of the input parameters into the ETo equations. Where a 0 (or nothing) refers to no necessary parameter estimation (all measurement data was available), while a 1 refers to parameters that have the best input estimations and up to a value of 3 is the worst. Starting from the right, the first value refers to U_z, the second value refers to G, the third value refers to R_n, the fourth value refers to R_s, the fifth value refers to e_a, the sixth value refers to T_mean, the seventh value refers to P.
+    DataFrame or Series
+        If fill=False, then the function will return a Series of estimated ETo in mm. If fill is a str, then the function will return a DataFrame with an additional column for the filled ETo value in mm.
 
     .. [1] Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop evapotranspiration-Guidelines for computing crop water requirements-FAO Irrigation and drainage paper 56. FAO, Rome, 300(9), D05109.
     """
@@ -83,7 +48,7 @@ def eto_fao(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15, export=None):
     ## ETo equation with filled holes using interpolation (use with caution)
     if isinstance(interp, str):
         ETo_FAO_fill = self.tsreg(ETo_FAO, self.time_int, interp, maxgap)
-        ETo_FAO_fill.name = 'ETo_FAO_fill_mm'
+        ETo_FAO_fill.name = 'ETo_FAO_interp_mm'
         ETo = pd.concat([ETo_FAO, ETo_FAO_fill], axis=1).round(2)
     else:
         ETo = ETo_FAO.round(2)

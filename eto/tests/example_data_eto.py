@@ -6,6 +6,7 @@ Created on Wed May  9 08:51:29 2018
 """
 import pandas as pd
 from pdsql import mssql
+import os
 
 
 ############################################
@@ -22,7 +23,7 @@ dataset_ids = {18: 'T_max', 20: 'T_min', 34: 'R_s', 28: 'e_a'}
 
 sites = [17244]
 
-export_data = r'E:\ecan\git\ETo\eto\datasets\test1.csv'
+export_data = r'E:\ecan\git\ETo\eto\datasets\example1.csv'
 
 ###########################################
 ### extract data
@@ -43,11 +44,24 @@ tsdata3 = tsdata2[tsdata2['T_max'].notnull() & tsdata2['T_min'].notnull()]
 tsdata3.to_csv(export_data)
 
 
+###############################
+### Tests
+
+tsdata = pd.read_csv(export_data, parse_dates=True, infer_datetime_format=True, index_col='date')
+
+et1 = ETo(tsdata)
+et1.ts_param
+et1.eto_fao()
+interp1 = et1.eto_fao(interp='linear')
+
+et1.hargreaves()
 
 
+results1 = pd.concat([et1.eto_fao(), et1.hargreaves()], axis=1)
+results1.to_csv(r'E:\ecan\git\ETo\eto\datasets\example1_results.csv')
 
 
-
+p1 = [p for p in os.listdir(r'E:\ecan\git\ETo\eto\datasets') if p.endswith('.csv')]
 
 
 

@@ -7,10 +7,14 @@ import pandas as pd
 
 class ETo(object):
     """
+    Class to handle the parameter estimation of metereological values and the calcuation of reference ET and similar ET methods.
 
+    This class can be either initiated with empty parameters or will initialise to the param_est function.
     """
     from param_est import param_est
     from methods.ETo import eto_fao as _eto_fao
+    from methods.hargreaves import hargreaves as _hargreaves
+
 
     def __init__(self, df=None, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days', K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
         if df is None:
@@ -18,16 +22,26 @@ class ETo(object):
         else:
             self.param_est(df, z_msl, lat, lon, TZ_lon, z_u, time_int, K_rs, a_s, b_s, alb)
 
+
     @staticmethod
     def tsreg(ts, freq=None, interp=False, maxgap=None):
         """
         Function to regularize a time series object (pandas).
         The first three indeces must be regular for freq=None!!!
 
-        ts -- pandas time series dataframe.\n
-        freq -- Either specify the known frequency of the data or use None and
-        determine the frequency from the first three indices.\n
-        interp -- Interpolation method.
+        Parameters
+        ----------
+        ts : DataFrame
+            With a DateTimeIndex.
+        freq : str or None
+            Either specify the known frequency of the data or use None and
+        determine the frequency from the first three indices.
+        interp : str
+            Interpolation method.
+
+        Returns
+        -------
+        DataFrame
         """
 
         if freq is None:
