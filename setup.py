@@ -10,7 +10,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 name = 'ETo'
 main_package = 'eto'
 datasets = 'datasets'
-version = '1.0.0'
+version = '1.0.5'
 
 # The below code is for readthedocs. To have sphinx/readthedocs interact with
 # the contained package, readthedocs needs to build the package. But the dependencies
@@ -78,7 +78,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url='https://github.com/mullenkamp/hilltop-py',  # Optional
+    url='https://github.com/mullenkamp/ETo',  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
@@ -131,8 +131,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    # packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
-    packages=[main_package, datasets],
+    packages=find_packages(exclude=['contrib', 'docs', 'tests', '__pycashe__']),  # Required
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
@@ -161,7 +160,7 @@ setup(
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     package_data={  # Optional
-        'eto': data_files,
+        main_package: [datasets + '/*.csv'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may

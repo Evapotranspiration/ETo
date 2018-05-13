@@ -7,6 +7,7 @@ Created on Wed May  9 15:12:14 2018
 import pytest
 import pandas as pd
 import os
+from eto import ETo
 
 ###############################
 ### Parameters

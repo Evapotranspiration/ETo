@@ -11,9 +11,9 @@ class ETo(object):
 
     This class can be either initiated with empty parameters or will initialise to the param_est function.
     """
-    from param_est import param_est
-    from methods.ETo import eto_fao as _eto_fao
-    from methods.hargreaves import hargreaves as _hargreaves
+    from eto.param_est import param_est
+    from eto.methods.ETo import eto_fao as _eto_fao
+    from eto.methods.hargreaves import hargreaves as _hargreaves
 
 
     def __init__(self, df=None, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days', K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
@@ -51,7 +51,3 @@ class ETo(object):
             ts1 = ts1.interpolate(interp, limit=maxgap)
 
         return ts1
-
-
-
-
