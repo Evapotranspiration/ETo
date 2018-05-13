@@ -11,6 +11,7 @@ class ETo(object):
 
     This class can be either initiated with empty parameters or will initialise to the param_est function.
     """
+    from copy import copy
     from eto.param_est import param_est
     from eto.methods.ETo import eto_fao
     from eto.methods.hargreaves import hargreaves

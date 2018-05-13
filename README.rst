@@ -7,7 +7,7 @@ A parameter estimation function hs also been added to the base class to convert 
 
 Documentation
 --------------
-The primary documentation for the package can be found `here <http://pdsql.readthedocs.io>`_.
+The primary documentation for the package can be found `here <http://eto.readthedocs.io>`_.
 
 Installation
 ------------

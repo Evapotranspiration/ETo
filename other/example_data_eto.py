@@ -63,7 +63,7 @@ results1.to_csv(r'E:\ecan\git\ETo\eto\datasets\example1_results.csv')
 
 p1 = [p for p in os.listdir(r'E:\ecan\git\ETo\eto\datasets') if p.endswith('.csv')]
 
-import panas as pd
+import pandas as pd
 from eto import ETo, datasets
 
 et1 = ETo()
@@ -72,7 +72,7 @@ ex1_path = datasets.get_path('example1')
 tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
 
 et1.param_est(tsdata)
-
+et1.eto_fao()
 
 
 
