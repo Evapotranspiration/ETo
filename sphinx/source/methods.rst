@@ -13,7 +13,7 @@ Hargreaves
 
 The derivation for the Hargreaves equation can also be found in the `UN-FAO 56 paper <http://www.fao.org/docrep/X0490E/x0490e07.htm#an%20alternative%20equation%20for%20eto%20when%20weather%20data%20are%20missing>`_.
 
-The `History and Evaluation of Hargreaves Evapotranspiration Equation <http://onlinecalc.sdsu.edu/onlinehargreaves.pdf>`_[2] is a more detailed description and background of the Hargreaves method.
+The `History and Evaluation of Hargreaves Evapotranspiration Equation <http://onlinecalc.sdsu.edu/onlinehargreaves.pdf>`_ [2] is a more detailed description and background of the Hargreaves method.
 
 
 References
