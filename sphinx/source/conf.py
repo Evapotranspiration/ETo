@@ -19,6 +19,7 @@
 #
 import os
 import sys
+import eto
 
 project_name = 'ETo'
 
@@ -47,16 +48,16 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
+    # 'sphinx.ext.coverage',
+    # 'sphinx.ext.mathjax',
+    # 'sphinx.ext.ifconfig',
+    # 'sphinx.ext.viewcode',
+    # 'sphinx.ext.githubpages',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     # 'sphinx_gallery.gen_gallery',
 	#'rst2pdf.pdfbuilder',
+    'numpydoc',
 
     # IPython console
     'IPython.sphinxext.ipython_console_highlighting',
@@ -90,6 +91,9 @@ autosummary_generate = True
 # Google Analytics ID to enable tracking of site traffic
 #googleanalytics_id = "UA-103385820-1"
 #googleanalytics_enabled = True
+
+# Fix issue with warnings from numpydoc (see discussion in PR #534)
+numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -171,7 +175,7 @@ pygments_style = 'sphinx'
 # keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+# todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------
