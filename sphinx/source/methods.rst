@@ -6,7 +6,7 @@ Reference evapotranspiration (ETo)
 
 The derivation of ETo had developed over many years with several different equations. The latest and hopefully last variant is derived from the Penman-Montieth equation.
 
-Extensive documentation on the methods and conv=cepts can be found in the `UN-FAO 56 paper <http://www.fao.org/docrep/X0490E/X0490E00.htm>`_ [1]
+Extensive documentation on the methods and concepts can be found in the `UN-FAO 56 paper <http://www.fao.org/docrep/X0490E/X0490E00.htm>`_ [1]
 
 Hargreaves
 ----------
