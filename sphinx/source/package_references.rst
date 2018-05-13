@@ -9,7 +9,9 @@ Base class
 ETo functions
 ---------------
 
-.. autofunction:: eto.ETo._eto_fao
+.. autofunction:: eto.ETo.eto_fao
+
+.. automethod:: eto.ETo.eto_fao
 
 API Pages
 ---------

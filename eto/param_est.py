@@ -215,6 +215,5 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
 
     #######
     ## Assign the ET methods
-    self.eto_fao = self._eto_fao
-    self.hargreaves = self._hargreaves
-
+    # self.eto_fao = self._eto_fao
+    # self.hargreaves = self._hargreaves
