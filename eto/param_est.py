@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Functions for parameter estimation.
+Function for parameter estimation.
 """
 import numpy as np
 import pandas as pd
@@ -39,7 +39,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     -------
     DataFrame
 
-    Input df
+    Notes
     --------
     The input data must be a DataFrame with specific column names according to the met parameter. The column names should be a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but can contain any/all of the following:
 
@@ -72,8 +72,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     e_a
         Actual Vapour pressure derrived from RH
 
-    Parameter estimation
-    --------------------
+
     Parameter estimation values refer to the quality level of the input parameters into the ETo equations. Where a 0 (or nothing) refers to no necessary parameter estimation (all measurement data was available), while a 1 refers to parameters that have the best input estimations and up to a value of 3 is the worst. Starting from the right, the first value refers to U_z, the second value refers to G, the third value refers to R_n, the fourth value refers to R_s, the fifth value refers to e_a, the sixth value refers to T_mean, the seventh value refers to P.
 
     References
