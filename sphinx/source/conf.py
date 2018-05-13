@@ -59,8 +59,8 @@ extensions = [
 	#'rst2pdf.pdfbuilder',
 
     # IPython console
-    # 'IPython.sphinxext.ipython_console_highlighting',
-    # 'IPython.sphinxext.ipython_directive',
+    'IPython.sphinxext.ipython_console_highlighting',
+    'IPython.sphinxext.ipython_directive',
 
     # Enable Google Analytics ( requires: https://pypi.python.org/pypi/sphinxcontrib-googleanalytics )
     #'sphinxcontrib.googleanalytics',

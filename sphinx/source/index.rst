@@ -14,7 +14,7 @@ A parameter estimation function hs also been added to the base class to convert 
    installaiton
    methods
    usage
-   .. package_references
+   package_references
    license-terms
 
 
