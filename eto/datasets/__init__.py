@@ -5,7 +5,7 @@ __all__ = ['available', 'get_path']
 
 _module_path = os.path.dirname(__file__)
 _available_csv = {p.split('.')[0]: p for p in os.listdir(_module_path) if p.endswith('.csv')}
-available = _available_csv
+available = list(_available_csv.keys())
 
 
 def get_path(dataset):

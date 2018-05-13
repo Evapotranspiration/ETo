@@ -28,6 +28,9 @@ def eto_fao(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15, export=None):
     DataFrame or Series
         If fill=False, then the function will return a Series of estimated ETo in mm. If fill is a str, then the function will return a DataFrame with an additional column for the filled ETo value in mm.
 
+    References
+    ----------
+    
     .. [1] Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop evapotranspiration-Guidelines for computing crop water requirements-FAO Irrigation and drainage paper 56. FAO, Rome, 300(9), D05109.
     """
 
@@ -57,4 +60,3 @@ def eto_fao(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15, export=None):
     if isinstance(export, str):
         ETo.to_csv(export)
     return ETo
-

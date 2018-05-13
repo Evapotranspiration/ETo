@@ -9,18 +9,23 @@ The package and general usage is via the main ETo class. It can be initialised w
 
 .. code:: python
 
-    from eto import ETo
+    import eto
 
-    et1 = ETo()
+    et1 = eto.ETo()
 
 .. ipython:: python
    :suppress:
 
-   from eto import ETo
+   import eto
 
-   et1 = ETo()
+   et1 = eto.ETo()
 
+Parameter estimation
+---------------------
+The input data can be read into the class at initiatisation or via the param_est function.
 
-
-.. Parameter estimation
-.. ---------------------
+.. .. ipython:: python
+..
+..    from eto import ETo
+..
+..    et1 = ETo()

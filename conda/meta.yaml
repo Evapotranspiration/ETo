@@ -1,6 +1,6 @@
 {% set name = "ETo" %}
-{% set version = "1.0.5" %}
-{% set sha256 = "dba4d824b53032bb570d785ae33e513036f49243c2303225e7c8e3847adafc75" %}
+{% set version = "1.0.6" %}
+{% set sha256 = "4bf23b9f08908d33bef9108fa331b6b92fa9dbe5e5a8ba48e667a8415c8f5180" %}
 
 # sha256 is the prefered checksum -- you can get it for a file with:
 #  `openssl sha256 <file name>`.

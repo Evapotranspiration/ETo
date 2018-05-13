@@ -6,10 +6,14 @@ Base class
 
 .. autoclass:: eto.ETo
 
+Parameter estimation
+--------------------
+
+.. automethod:: eto.ETo.parm_est
+
+
 ETo functions
 ---------------
-
-.. autofunction:: eto.ETo.eto_fao
 
 .. automethod:: eto.ETo.eto_fao
 
