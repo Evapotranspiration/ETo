@@ -9,7 +9,7 @@ Base class
 Parameter estimation
 --------------------
 
-.. automethod:: eto.ETo.parm_est
+.. automethod:: eto.ETo.param_est
 
 
 ETo functions
