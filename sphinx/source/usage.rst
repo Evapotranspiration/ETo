@@ -7,12 +7,12 @@ Initialising
 ------------
 The package and general usage is via the main ETo class. It can be initialised without any initial input parameters.
 
-.. ipython:: python
+.. .. ipython:: python
+..
+..     from eto import ETo
+..
+..     et1 = ETo()
 
-    from eto import ETo
 
-    et1 = ETo()
-
-
-Parameter estimation
----------------------
+.. Parameter estimation
+.. ---------------------
