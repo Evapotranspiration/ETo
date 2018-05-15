@@ -10,7 +10,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 name = 'ETo'
 main_package = 'eto'
 datasets = 'datasets'
-version = '1.0.8'
+version = '1.0.9'
 
 # The below code is for readthedocs. To have sphinx/readthedocs interact with
 # the contained package, readthedocs needs to build the package. But the dependencies

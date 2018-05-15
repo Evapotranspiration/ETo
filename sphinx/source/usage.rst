@@ -1,7 +1,7 @@
 How to use ETo
 ===============
 
-This section will describe how to use the ETo package.
+This section will describe how to use the ETo package. The ETo class and functions depend heavily on the Pandas package. Nearly all outputs are either as Pandas Series or DataFrames.
 
 Initialising
 ------------

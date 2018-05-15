@@ -25,7 +25,6 @@ class ETo(object):
             self.param_est(df, z_msl, lat, lon, TZ_lon, z_u, time_int, K_rs, a_s, b_s, alb)
 
 
-
     @staticmethod
     def tsreg(ts, freq=None, interp=False, maxgap=None):
         """
