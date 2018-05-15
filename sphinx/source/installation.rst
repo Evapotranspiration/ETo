@@ -9,4 +9,4 @@ or::
 
   conda install -c mullenkamp eto
 
-The core dependency is `Pandas <http://pandas.pydata.org/pandas-docs/stable/>`_`.
+The core dependency is `Pandas <http://pandas.pydata.org/pandas-docs/stable/>`_.
