@@ -32,12 +32,14 @@ We first need to get an example dataset and read it in via pd.read_csv.
 
     ex1_path = datasets.get_path('example1')
     tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
+    tsdata.head()
 
 Now we can run the parameter estimation using the newly loaded in dataset using the default parameters.
 
 .. ipython:: python
 
     et1.param_est(tsdata)
+    et1.ts_param.head()
 
 
 Calculate ETo
@@ -47,4 +49,4 @@ Now it's just a matter of running the specific ETo function. For example, the FA
 .. ipython:: python
 
     eto1 = et1.eto_fao()
-    print(eto1.head())
+    eto1.head()

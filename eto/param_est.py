@@ -13,7 +13,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     Parameters
     ----------
     df : DataFrame
-        Input Met data (see Input df section).
+        Input Metereological data (see Notes section).
     z_msl : float or int
         Elevation of the met station above mean sea level (m) (only needed if P is not in df).
     lat : float or int

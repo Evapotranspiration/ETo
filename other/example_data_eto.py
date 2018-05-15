@@ -72,7 +72,7 @@ ex1_path = datasets.get_path('example1')
 tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
 
 et1.param_est(tsdata)
-et1.eto_fao()
+e1 = et1.eto_fao()
 
 
 
