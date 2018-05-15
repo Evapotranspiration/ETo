@@ -16,7 +16,7 @@ ETo functions
 
 .. automethod:: eto.ETo.eto_fao
 
-.. automethod:: eto.ETo.hargreaves
+.. automethod:: eto.ETo.eto_hargreaves
 
 API Pages
 ---------

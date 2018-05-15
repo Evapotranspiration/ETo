@@ -3,6 +3,10 @@
 Class to estimate reference ET (ETo) from the FAO 56 paper using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but utilizing the maximum number of available met parameters. The function prioritizes the estimation of specific parameters based on the available input data.
 """
 import pandas as pd
+from copy import copy
+from eto.param_est import param_est
+from eto.methods.ETo import eto_fao
+from eto.methods.hargreaves import hargreaves
 
 
 class ETo(object):
@@ -11,17 +15,15 @@ class ETo(object):
 
     This class can be either initiated with empty parameters or will initialise to the param_est function.
     """
-    from copy import copy
-    from eto.param_est import param_est
-    from eto.methods.ETo import eto_fao
-    from eto.methods.hargreaves import hargreaves
 
 
     def __init__(self, df=None, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days', K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
+
         if df is None:
             pass
         else:
             self.param_est(df, z_msl, lat, lon, TZ_lon, z_u, time_int, K_rs, a_s, b_s, alb)
+
 
 
     @staticmethod
@@ -52,3 +54,10 @@ class ETo(object):
             ts1 = ts1.interpolate(interp, limit=maxgap)
 
         return ts1
+
+### Add in the ETo methods and other functions
+ETo.param_est = param_est
+ETo.eto_fao = eto_fao
+ETo.eto_hargreaves = hargreaves
+ETo.copy = copy
+

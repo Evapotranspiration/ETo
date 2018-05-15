@@ -11,8 +11,8 @@ A parameter estimation function hs also been added to the base class to convert 
    :caption: Modules
 
    intro
-   installaiton
    methods
+   installation
    usage
    package_references
    license-terms

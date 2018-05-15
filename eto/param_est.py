@@ -214,13 +214,3 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     # or use 2 if wind speed is not known
     self.est_val.loc[self.ts_param['U_z'].isnull()] = self.est_val.loc[self.ts_param['U_z'].isnull()] + 1
     self.ts_param.loc[self.ts_param['U_z'].isnull(), 'U_2'] = 2
-
-    #######
-    ## Assign the ET methods
-    self.eto_fao = self.eto_fao
-    self.hargreaves = self.hargreaves
-
-    #######
-    ## Return
-    new1 = self.copy()
-    return new1

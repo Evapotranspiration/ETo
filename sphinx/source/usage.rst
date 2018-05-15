@@ -28,22 +28,23 @@ The input data can be read into the class at initiatisation or via the param_est
 
 We first need to get an example dataset and read it in via pd.read_csv.
 
-.. code:: python
+.. ipython:: python
 
     ex1_path = datasets.get_path('example1')
     tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
 
 Now we can run the parameter estimation using the newly loaded in dataset using the default parameters.
 
-.. code:: python
+.. ipython:: python
 
-    et2 = et1.param_est(tsdata)
+    et1.param_est(tsdata)
 
 
 Calculate ETo
 -------------
 Now it's just a matter of running the specific ETo function. For example, the FAO ETo.
 
-.. code:: python
+.. ipython:: python
 
-    et3 = et2.eto_fao()
+    eto1 = et1.eto_fao()
+    print(eto1.head())
