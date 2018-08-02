@@ -182,4 +182,5 @@ setup(
     #        'sample=sample.command_line:t3',
     #    ],
     # },
+    license='Apache',
 )
