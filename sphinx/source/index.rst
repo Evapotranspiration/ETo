@@ -5,7 +5,7 @@ The ETo package contains a class and associated functions to calculate reference
 
 The GitHub repository is found `here <https://github.com/mullenkamp/ETo>`_
 
-A parameter estimation function hs also been added to the base class to convert most any variety of metereological parameter inputs to the necessary parameters needed to calculate ETo.
+A parameter estimation function has also been added to the base class to convert most any variety of metereological parameter inputs to the necessary parameters needed to calculate ETo. Unit conversion has not been implemented yet, so make sure you use the correct units!
 
 
 .. toctree::
