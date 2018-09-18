@@ -10,7 +10,7 @@ A parameter estimation function hs also been added to the base class to convert 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Modules
+   :caption: Sections
 
    intro
    methods
