@@ -1,0 +1,13 @@
+name: test
+channels:
+  - defaults
+dependencies:
+  - python=3.6
+  - six
+  # required
+  - pandas
+  # testing
+  - pytest
+  - pytest-cov
+  - pip:
+    - codecov

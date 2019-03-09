@@ -1,0 +1,28 @@
+language: python
+
+sudo: false
+
+matrix:
+  include:
+
+    - env: ENV_FILE="ci/travis/36-default.yaml"
+
+install:
+  # Install conda
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update conda
+
+  # Install dependencies
+  - conda env create --file="${ENV_FILE}"
+  - source activate test
+  - pip install -e .
+  - conda list
+
+script:
+  - py.test eto --cov eto -v --cov-report term-missing
+
+after_success:
+  - codecov
