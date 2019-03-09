@@ -35,8 +35,7 @@ def test_eto_fao():
 
 
 def test_eto_har():
-    et1 = ETo(tsdata).hargreaves().sum()
+    et1 = ETo(tsdata).eto_hargreaves().sum()
     res1 = tsresults['ETo_Har_mm'].sum()
 
     assert et1 == res1
-
