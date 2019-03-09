@@ -4,8 +4,9 @@ sudo: false
 
 matrix:
   include:
-
+    - env: ENV_FILE="ci/travis/35-defaults.yaml"
     - env: ENV_FILE="ci/travis/36-defaults.yaml"
+    - env: ENV_FILE="ci/travis/37-defaults.yaml"
 
 install:
   # Install conda
