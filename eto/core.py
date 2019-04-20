@@ -8,6 +8,10 @@ from eto.param_est import param_est
 from eto.methods.ETo import eto_fao
 from eto.methods.hargreaves import hargreaves
 
+#from param_est import param_est
+#from methods.ETo import eto_fao
+#from methods.hargreaves import hargreaves
+
 
 class ETo(object):
     """
@@ -17,12 +21,12 @@ class ETo(object):
     """
 
 
-    def __init__(self, df=None, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days', K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
+    def __init__(self, df=None, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z_u=2, K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
 
         if df is None:
             pass
         else:
-            self.param_est(df, z_msl, lat, lon, TZ_lon, z_u, time_int, K_rs, a_s, b_s, alb)
+            self.param_est(df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
 
 
     @staticmethod

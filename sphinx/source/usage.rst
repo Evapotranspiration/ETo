@@ -30,15 +30,21 @@ We first need to get an example dataset and read it in via pd.read_csv.
 
 .. ipython:: python
 
-    ex1_path = datasets.get_path('example1')
+    ex1_path = datasets.get_path('example_daily')
     tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
     tsdata.head()
 
-Now we can run the parameter estimation using the newly loaded in dataset using the default parameters.
+Now we can run the parameter estimation using the newly loaded in dataset using the parameters below.
 
 .. ipython:: python
 
-    et1.param_est(tsdata)
+    z_msl = 500
+    lat = -43.6
+    lon = 172
+    TZ_lon = 173
+    freq = 'D'
+
+    et1.param_est(tsdata, freq, z_msl, lat, lon, TZ_lon)
     et1.ts_param.head()
 
 
