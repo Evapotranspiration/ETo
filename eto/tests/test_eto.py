@@ -32,13 +32,13 @@ tsresults = pd.read_csv(results1, parse_dates=True, infer_datetime_format=True, 
 
 
 def test_eto_fao_daily():
-    et1 = ETo(tsdata, z_msl, lat, lon, TZ_lon)
+    et1 = ETo(tsdata, 'D', z_msl, lat, lon, TZ_lon)
     eto1 = et1.eto_fao().sum()
     res1 = tsresults['ETo_FAO_mm'].sum()
 
     assert eto1 == res1
 
-et1 = ETo(tsdata, z_msl, lat, lon, TZ_lon)
+et1 = ETo(tsdata, 'D', z_msl, lat, lon, TZ_lon)
 
 def test_eto_har_daily():
     eto2 = et1.eto_hargreaves().sum()
