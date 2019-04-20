@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_int='days', K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
+def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z_u=2, K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23):
     """
     Function to estimate the parameters necessary to calculate reference ET (ETo) from the `FAO 56 paper <http://www.fao.org/docrep/X0490E/X0490E00.htm>`_ [1]_ using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but optionally utilising the maximum number of available met parameters. The function prioritizes the estimation of specific parameters based on the available input data.
 
@@ -14,18 +14,18 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     ----------
     df : DataFrame
         Input Metereological data (see Notes section).
-    z_msl : float or int
+    z_msl : float, int, or None
         Elevation of the met station above mean sea level (m) (only needed if P is not in df).
-    lat : float or int
+    lat : float, int, or None
         The latitude of the met station (dec deg) (only needed if R_s or R_n are not in df).
-    lon : float or int
+    lon : float, int, or None
         The longitude of the met station (dec deg) (only needed if calculating ETo hourly)
-    TZ_lon : float or int
+    TZ_lon : float, int, or None
         The longitude of the center of the time zone (dec deg) (only needed if calculating ETo hourly).
     z_u : float or int
-        The height of the wind speed measurement (m).
-    time_int : str
-        The time interval of the input and output (either 'days' or 'hours').
+        The height of the wind speed measurement (m). Default is 2 m.
+    freq : str
+        The Pandas time frequency string of the input and output. The minimum frequency is hours (H) and the maximum is month (M).
     K_rs : float
         Rs calc coefficient (0.16 for inland stations, 0.19 for coastal stations)
     a_s : float
@@ -33,7 +33,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     b_s : float
         Rs calc coefficient
     alb : float
-        Albedo (should be fixed for the reference crop)
+        Albedo. Should be 0.23 for the reference crop.
 
     Returns
     -------
@@ -82,10 +82,7 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     """
 
     met_names = np.array(['R_n', 'R_s', 'G', 'T_min', 'T_max', 'T_mean', 'T_dew', 'RH_min', 'RH_max', 'RH_mean', 'n_sun', 'U_z', 'P', 'e_a'])
-    if time_int == 'days':
-        self.time_int = 'D'
-    elif time_int == 'hours':
-        self.time_int = 'H'
+    self.freq = freq
 
     ####################################
     ##### Set up the DataFrame and estimated values series
@@ -94,6 +91,20 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     self.ts_param = pd.concat([df, new_df], axis=1).copy()
 
     self.est_val = pd.Series(0, index=self.ts_param.index, name='est_val')
+
+    ####################################
+    ###### Check to make sure minimum requirements are met
+    if 'H' in freq:
+        T_mean_bool = self.ts_param['T_mean'].isnull().any()
+        RH_mean_bool = self.ts_param['RH_mean'].isnull().any()
+        e_a_bool = self.ts_param['e_a'].isnull().any()
+        if T_mean_bool | (RH_mean_bool & e_a_bool):
+            raise ValueError('Minimum data input was not met. Check your data.')
+    else:
+        T_min_bool = self.ts_param['T_min'].isnull().any()
+        T_max_bool = self.ts_param['T_max'].isnull().any()
+        if T_min_bool | T_max_bool:
+            raise ValueError('Minimum data input was not met. Check your data.')
 
     ####################################
     ###### Calculations
@@ -122,12 +133,13 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_mean'] = (self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_max'] + self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_min'])/2
 
     ## Vapor pressures
-    if time_int == 'days':
+    if 'H' in freq:
+        self.ts_param['e_mean'] = 0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean']+237.3))
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_mean']*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100
+    else:
         self.ts_param['e_max'] = 0.6108*np.exp(17.27*self.ts_param['T_max']/(self.ts_param['T_max']+237.3))
         self.ts_param['e_min'] = 0.6108*np.exp(17.27*self.ts_param['T_min']/(self.ts_param['T_min']+237.3))
         self.ts_param['e_s'] = (self.ts_param['e_max']+self.ts_param['e_min'])/2
-
-        self.ts_param['delta'] = 4098*(0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean'] + 237.3)))/((self.ts_param['T_mean'] + 237.3)**2)
 
         # e_a if dewpoint temperature is known
         self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_dew']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_dew'] + 237.3))
@@ -144,11 +156,8 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
         self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min'] + 237.3))
 
-    elif time_int == 'hours':
-        self.ts_param['e_mean'] = 0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean']+237.3))
-        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_mean']*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100
-    else:
-        raise ValueError('time_int must be either days or hours.')
+    # Delta
+    self.ts_param['delta'] = 4098*(0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean'] + 237.3)))/((self.ts_param['T_mean'] + 237.3)**2)
 
 
     ######
@@ -160,19 +169,17 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     d_r = 1+0.033*np.cos(2*np.pi*Day/365)
     w_s = np.arccos(-np.tan(phi)*np.tan(delta))
 
-    if time_int == 'days':
-        self.ts_param['R_a'] = 24*60/np.pi*0.082*d_r*(w_s*np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.sin(w_s))
-    elif time_int == 'hours':
+    if 'H' in freq:
         hour_vec = df.index.hour
         b = (2*np.pi*(Day - 81))/364
         S_c = 0.1645*np.sin(2*b) - 0.1255*np.cos(b) - 0.025*np.sin(b)
         w = np.pi/12*(((hour_vec+0.5) + 0.6666667*(TZ_lon - lon) + S_c) - 12)
-        w_1 = w - (np.pi*hour_vec)/24
-        w_2 = w + (np.pi*hour_vec)/24
+        w_1 = w - (np.pi*1)/24  # Need to update one day for different hourly periods
+        w_2 = w + (np.pi*1)/24  # Need to update one day for different hourly periods
 
         self.ts_param['R_a'] = 12*60/np.pi*0.082*d_r*((w_2 - w_1)*np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*(np.sin(w_2) - np.sin(w_1)))
     else:
-        raise ValueError('time_int must be either days or hours.')
+        self.ts_param['R_a'] = 24*60/np.pi*0.082*d_r*(w_s*np.sin(phi)*np.sin(delta) + np.cos(phi)*np.cos(delta)*np.sin(w_s))
 
     # Daylight hours
     N = 24*w_s/np.pi
@@ -192,10 +199,10 @@ def param_est(self, df, z_msl=500, lat=-43.6, lon=172, TZ_lon=173, z_u=2, time_i
     R_ns = (1 - alb)*self.ts_param['R_s']
 
     # R_nl
-    if time_int == 'days':
-        R_nl = (4.903*10**(-9))*(((self.ts_param['T_max'] + 273.16)**4 + (self.ts_param['T_min'] + 273.16) **4)/2)*(0.34-0.14*(self.ts_param['e_a']) **0.5)*((1.35*self.ts_param['R_s']/R_so) - 0.35)
-    elif time_int == 'hours':
+    if 'H' in freq:
         R_nl = (2.043*10**(-10))*((self.ts_param['T_mean'] + 273.16)**4)*(0.34-0.14*(self.ts_param['e_a']) **0.5)*((1.35*self.ts_param['R_s']/R_so) - 0.35)
+    else:
+        R_nl = (4.903*10**(-9))*(((self.ts_param['T_max'] + 273.16)**4 + (self.ts_param['T_min'] + 273.16) **4)/2)*(0.34-0.14*(self.ts_param['e_a']) **0.5)*((1.35*self.ts_param['R_s']/R_so) - 0.35)
 
     # R_n
     self.est_val.loc[self.ts_param['R_n'].isnull()] = self.est_val.loc[self.ts_param['R_n'].isnull()] + 100

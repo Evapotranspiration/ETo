@@ -10,10 +10,19 @@ def tsreg(ts, freq=None, interp=False, maxgap=None):
     Function to regularize a time series object (pandas).
     The first three indeces must be regular for freq=None!!!
 
-    ts -- pandas time series dataframe.\n
-    freq -- Either specify the known frequency of the data or use None and
-    determine the frequency from the first three indices.\n
-    interp -- Interpolation method.
+    Parameters
+    ----------
+    ts : DataFrame
+        pandas time series dataframe.
+    freq : str
+        Either specify the known frequency of the data or use None and
+    determine the frequency from the first three indices.
+    interp : str
+        Pandas Interpolation method.
+
+    Returns
+    -------
+    DataFrame
     """
 
     if freq is None:
