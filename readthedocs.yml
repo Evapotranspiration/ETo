@@ -1,8 +1,12 @@
-formats:
-    - pdf
-    - epub
+version: 2
+formats: all
+sphinx:
+  configuration: sphinx/source/conf.py
 conda:
-    file: sphinx/env.yml
+    environment: sphinx/env.yml
 python:
-    version: 3
-    setup_py_install: true
+   version: 3.6
+   install:
+      - method: pip
+        path: .
+      - method: setuptools
