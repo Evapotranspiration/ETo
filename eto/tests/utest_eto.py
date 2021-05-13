@@ -27,11 +27,11 @@ TZ_lon=15
 ###############################
 ### Tests
 
-tsdata = pd.read_table(example1, sep=';', parse_dates=True, infer_datetime_format=True, index_col='DATUM').drop('STATION', axis=1)
+tsdata1 = pd.read_table(example1, sep=';', parse_dates=True, infer_datetime_format=True, index_col='DATUM').drop('STATION', axis=1)
 
 # tsresults = pd.read_csv(results1, parse_dates=True, infer_datetime_format=True, index_col='date')
 
-et1 = ETo(tsdata, 'H', z_msl, lat, lon, TZ_lon, K_rs=0.16)
+et1 = ETo(tsdata1, 'H', z_msl, lat, lon, TZ_lon, K_rs=0.16)
 eto1 = et1.eto_fao()
 
 
