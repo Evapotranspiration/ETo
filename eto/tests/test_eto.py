@@ -30,9 +30,9 @@ TZ_lon=173
 ###############################
 ### Tests
 
-tsdata = pd.read_csv(example1, parse_dates=True, infer_datetime_format=True, index_col='date', compression='zip')
+tsdata = pd.read_csv(example1, parse_dates=True, index_col='date', compression='zip')
 
-tsresults = pd.read_csv(results1, parse_dates=True, infer_datetime_format=True, index_col='date', compression='zip')
+tsresults = pd.read_csv(results1, parse_dates=True, index_col='date', compression='zip')
 
 
 def test_eto_fao_daily():
