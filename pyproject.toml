@@ -7,7 +7,7 @@ name = "ETo"
 dynamic = ["version"]
 description = "Class and functions to estimate reference ET"
 readme = "README.rst"
-license = "Apache"
+license = "Apache-2.0"
 authors = [
     { name = "Mike Kittridge", email = "mullenkamp1@gmail.com" },
 ]
