@@ -52,8 +52,8 @@ def test_eto_har_daily():
 
 def test_eto_fao_hourly():
     tsdata2 = et1.ts_param[['R_s', 'T_mean', 'e_a']]
-    tsdata3 = et1.tsreg(tsdata2, 'H', 'time')
-    et2 = ETo(tsdata3, 'H', z_msl, lat, lon, TZ_lon)
+    tsdata3 = et1.tsreg(tsdata2, 'h', 'time')
+    et2 = ETo(tsdata3, 'h', z_msl, lat, lon, TZ_lon)
     eto3 = et2.eto_fao().sum()
 
     res1 = tsresults['ETo_FAO_mm'].sum()
