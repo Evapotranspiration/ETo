@@ -31,7 +31,7 @@ We first need to get an example dataset and read it in via pd.read_csv.
 .. ipython:: python
 
     ex1_path = datasets.get_path('example_daily')
-    tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date')
+    tsdata = pd.read_csv(ex1_path, parse_dates=True, infer_datetime_format=True, index_col='date', compression='zip')
     tsdata.head()
 
 Now we can run the parameter estimation using the newly loaded in dataset using the parameters below.
@@ -50,7 +50,7 @@ Now we can run the parameter estimation using the newly loaded in dataset using 
 
 Calculate ETo
 -------------
-Now it's just a matter of running the specific ETo function. For example, the FAO ETo.
+Now it's just a matter of running the specific ETo function. For example, the FAO ETo:
 
 .. ipython:: python
 

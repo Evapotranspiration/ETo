@@ -86,7 +86,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
 
     ####################################
     ##### Set up the DataFrame and estimated values series
-    new_cols = met_names[~np.in1d(met_names, df.columns)]
+    new_cols = met_names[~np.isin(met_names, df.columns)]
     new_df = pd.DataFrame(np.nan, index=df.index, columns=new_cols)
     self.ts_param = pd.concat([df, new_df], axis=1).copy()
 
@@ -94,7 +94,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
 
     ####################################
     ###### Check to make sure minimum requirements are met
-    if 'H' in freq:
+    if 'h' in freq.lower():
         T_mean_bool = self.ts_param['T_mean'].isnull().any()
         RH_mean_bool = self.ts_param['RH_mean'].isnull().any()
         e_a_bool = self.ts_param['e_a'].isnull().any()
@@ -133,7 +133,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
     self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_mean'] = (self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_max'] + self.ts_param.loc[self.ts_param['T_mean'].isnull(), 'T_min'])/2
 
     ## Vapor pressures
-    if 'H' in freq:
+    if 'h' in freq.lower():
         self.ts_param['e_mean'] = 0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean']+237.3))
         self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_mean']*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100
     else:
@@ -146,15 +146,15 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
 
         # e_a if min and max temperatures and humidities are known
         self.est_val.loc[self.ts_param['T_dew'].isnull()] = self.est_val.loc[self.ts_param['T_dew'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = (self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100 + self.ts_param['e_max'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_min']/100)/2
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = (self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100 + self.ts_param['e_max'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_min']/100)/2
 
         # self.ts_param['e_a'] if only mean humidity is known
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100*(self.ts_param['e_max'][self.ts_param['e_a'].isnull()] + self.ts_param['e_min'][self.ts_param['e_a'].isnull()])/2
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100*(self.ts_param['e_max'][self.ts_param['e_a'].isnull()] + self.ts_param['e_min'][self.ts_param['e_a'].isnull()])/2
 
         # e_a if humidity is not known
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min'] + 237.3))
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min'] + 237.3))
 
     # Delta
     self.ts_param['delta'] = 4098*(0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean'] + 237.3)))/((self.ts_param['T_mean'] + 237.3)**2)
@@ -169,7 +169,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
     d_r = 1+0.033*np.cos(2*np.pi*Day/365)
     w_s = np.arccos(-np.tan(phi)*np.tan(delta))
 
-    if 'H' in freq:
+    if 'h' in freq.lower():
         hour_vec = df.index.hour
         b = (2*np.pi*(Day - 81))/364
         S_c = 0.1645*np.sin(2*b) - 0.1255*np.cos(b) - 0.025*np.sin(b)
@@ -199,7 +199,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
     R_ns = (1 - alb)*self.ts_param['R_s']
 
     # R_nl
-    if 'H' in freq:
+    if 'h' in freq.lower():
         R_nl = (2.043*10**(-10))*((self.ts_param['T_mean'] + 273.16)**4)*(0.34-0.14*(self.ts_param['e_a']) **0.5)*((1.35*self.ts_param['R_s']/R_so) - 0.35)
     else:
         R_nl = (4.903*10**(-9))*(((self.ts_param['T_max'] + 273.16)**4 + (self.ts_param['T_min'] + 273.16) **4)/2)*(0.34-0.14*(self.ts_param['e_a']) **0.5)*((1.35*self.ts_param['R_s']/R_so) - 0.35)
