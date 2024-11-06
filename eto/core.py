@@ -26,7 +26,7 @@ class ETo(object):
         if df is None:
             pass
         else:
-            self.param_est(df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
+            param_est(self, df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
 
         ### Add in the ETo methods and other functions
         self.param_est = param_est
