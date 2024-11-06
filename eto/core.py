@@ -28,12 +28,18 @@ class ETo(object):
         else:
             self.param_est(df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
 
+        ### Add in the ETo methods and other functions
+        self.param_est = param_est
+        self.eto_fao = eto_fao
+        self.eto_hargreaves = hargreaves
+        self.copy = copy
+
 
     @staticmethod
     def tsreg(ts, freq=None, interp=False, maxgap=None):
         """
         Function to regularize a time series object (pandas).
-        The first three indeces must be regular for freq=None!!!
+        The first three indexes must be regular for freq=None!!!
 
         Parameters
         ----------
@@ -43,7 +49,7 @@ class ETo(object):
             Either specify the known frequency of the data or use None and
         determine the frequency from the first three indices.
         interp : str
-            Interpolation method.
+            Interpolation method fro the pandas interpolate method.
 
         Returns
         -------
@@ -58,9 +64,5 @@ class ETo(object):
 
         return ts1
 
-### Add in the ETo methods and other functions
-ETo.param_est = param_est
-ETo.eto_fao = eto_fao
-ETo.eto_hargreaves = hargreaves
-ETo.copy = copy
+
 

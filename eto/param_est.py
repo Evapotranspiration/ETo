@@ -146,15 +146,15 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
 
         # e_a if min and max temperatures and humidities are known
         self.est_val.loc[self.ts_param['T_dew'].isnull()] = self.est_val.loc[self.ts_param['T_dew'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = (self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100 + self.ts_param['e_max'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_min']/100)/2
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = (self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100 + self.ts_param['e_max'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_min']/100)/2
 
         # self.ts_param['e_a'] if only mean humidity is known
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100*(self.ts_param['e_max'][self.ts_param['e_a'].isnull()] + self.ts_param['e_min'][self.ts_param['e_a'].isnull()])/2
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100*(self.ts_param['e_max'][self.ts_param['e_a'].isnull()] + self.ts_param['e_min'][self.ts_param['e_a'].isnull()])/2
 
         # e_a if humidity is not known
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
-        self.ts_param['e_a'].loc[self.ts_param['e_a'].isnull()] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min'] + 237.3))
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = 0.6108*np.exp(17.27*self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min']/(self.ts_param.loc[self.ts_param['e_a'].isnull(), 'T_min'] + 237.3))
 
     # Delta
     self.ts_param['delta'] = 4098*(0.6108*np.exp(17.27*self.ts_param['T_mean']/(self.ts_param['T_mean'] + 237.3)))/((self.ts_param['T_mean'] + 237.3)**2)

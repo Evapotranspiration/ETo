@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ETo"
+dynamic = ["version"]
+description = "Class and functions to estimate reference ET"
+readme = "README.rst"
+license = "Apache"
+authors = [
+    { name = "Mike Kittridge", email = "mullenkamp1@gmail.com" },
+]
+keywords = [
+    "et",
+    "reference",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Topic :: Software Development :: Build Tools",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas",
+]
+
+[tool.hatch.envs.default]
+python = "3.10"
+dependencies = [
+    "spyder-kernels==2.4",
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/mullenkamp/ETo"
+
+[tool.hatch.version]
+path = "eto/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/eto",
+]
+exclude = [
+  '/eto/tests/utest*',
+]

@@ -6,17 +6,21 @@ Created on Wed May  9 15:12:14 2018
 """
 import pandas as pd
 import os
-from eto import ETo
+from eto import ETo, datasets
+import pytest
 
 ###############################
 ### Parameters
 
-_module_path = os.path.dirname(__file__)
-example_csv = 'example_daily.csv'
-results_csv = 'example_daily_results.csv'
+# _module_path = os.path.dirname(__file__)
+# example_csv = 'example_daily.csv'
+# results_csv = 'example_daily_results.csv'
 
-example1 = os.path.join(_module_path, example_csv)
-results1 = os.path.join(_module_path, results_csv)
+# example1 = os.path.join(_module_path, example_csv)
+# results1 = os.path.join(_module_path, results_csv)
+
+example1 = datasets.get_path('example_daily')
+results1 = datasets.get_path('example_daily_results')
 
 z_msl=500
 lat=-43.6
@@ -26,9 +30,9 @@ TZ_lon=173
 ###############################
 ### Tests
 
-tsdata = pd.read_csv(example1, parse_dates=True, infer_datetime_format=True, index_col='date')
+tsdata = pd.read_csv(example1, parse_dates=True, infer_datetime_format=True, index_col='date', compression='zip')
 
-tsresults = pd.read_csv(results1, parse_dates=True, infer_datetime_format=True, index_col='date')
+tsresults = pd.read_csv(results1, parse_dates=True, infer_datetime_format=True, index_col='date', compression='zip')
 
 
 def test_eto_fao_daily():
