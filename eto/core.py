@@ -49,7 +49,6 @@ class ETo(object):
         -------
         DataFrame
         """
-
         if freq is None:
             freq = pd.infer_freq(ts.index[:3])
         ts1 = ts.resample(freq).mean()
