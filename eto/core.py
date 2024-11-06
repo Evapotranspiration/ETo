@@ -26,13 +26,7 @@ class ETo(object):
         if df is None:
             pass
         else:
-            param_est(self, df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
-
-        ### Add in the ETo methods and other functions
-        self.param_est = param_est
-        self.eto_fao = eto_fao
-        self.eto_hargreaves = hargreaves
-        self.copy = copy
+            self.param_est(df, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb)
 
 
     @staticmethod
@@ -65,4 +59,8 @@ class ETo(object):
         return ts1
 
 
-
+### Add in the ETo methods and other functions
+ETo.param_est = param_est
+ETo.eto_fao = eto_fao
+ETo.eto_hargreaves = hargreaves
+ETo.copy = copy
