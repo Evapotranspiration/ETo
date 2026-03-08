@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "ETo"
 dynamic = ["version"]
 description = "Class and functions to estimate reference ET"
-readme = "README.rst"
+readme = "README.md"
 license = "Apache-2.0"
 authors = [
     { name = "Mike Kittridge", email = "mullenkamp1@gmail.com" },
@@ -56,6 +56,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/mullenkamp/ETo"
+Documentation = "https://mullenkamp.github.io/ETo/"
 
 [tool.hatch.version]
 path = "eto/__init__.py"
