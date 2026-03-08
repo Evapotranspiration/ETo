@@ -1,0 +1,43 @@
+{% set name = "eto" %}
+{% set version = "1.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/booklet-{{ version }}.tar.gz
+  sha256: 7d54912a2f027be79f4824939b575db9821b8804cad3c89881854e56fa61b343
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  build:
+    - hatchling
+  run:
+    - python >=3.8
+    - pandas
+
+test:
+  imports:
+    - eto
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/mullenkamp/ETo
+  license: Apache License 2.0
+  license_family: APACHE
+  summary: Functions to estimate reference evapotranspiration
+  doc_url: http://eto.readthedocs.io/
+  dev_url: https://github.com/mullenkamp/ETo
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - mullenkamp
