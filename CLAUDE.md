@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ETo is a Python package for calculating reference evapotranspiration (ETo) based on the FAO 56 paper. It requires a minimum of T_min and T_max for daily estimates or T_mean and RH_mean for hourly estimates, and uses all available meteorological parameters to improve accuracy.
 
-Only production dependency: `pandas`. Build system: `uv`.
+Only production dependency: `numpy`. Build system: `uv`.
 
 ## Common Commands
 
@@ -32,9 +32,9 @@ The main `ETo` class (`eto/core.py`) orchestrates the workflow:
 
 Methods are attached to the `ETo` class dynamically at module level (bottom of `core.py`), not defined as regular class methods. They receive `self` as first parameter and act as instance methods.
 
-**Typical flow**: `ETo(df, freq, lat=..., z_msl=...)` → `param_est()` populates `self.ts_param` (DataFrame of estimated parameters) → `eto_fao()` or `eto_hargreaves()` computes ET using those parameters.
+**Typical flow**: `ETo(data_dict, freq, lat=..., z_msl=..., dates=...)` or `ETo(data_dict, freq, lat=..., z_msl=..., day_of_year=..., hour=...)` → `param_est()` populates `self.ts_param` (`dict[str, np.ndarray]` of estimated parameters) and `self.est_val` (`np.ndarray`) → `eto_fao()` or `eto_hargreaves()` returns `np.ndarray`.
 
-Key input columns: `R_n`, `R_s`, `G`, `T_min`, `T_max`, `T_mean`, `T_dew`, `RH_min`, `RH_max`, `RH_mean`, `n_sun`, `U_z`, `P`, `e_a`.
+Key input dict keys: `R_n`, `R_s`, `G`, `T_min`, `T_max`, `T_mean`, `T_dew`, `RH_min`, `RH_max`, `RH_mean`, `n_sun`, `U_z`, `P`, `e_a`.
 
 ## Branch Strategy
 
