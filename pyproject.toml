@@ -32,6 +32,20 @@ dependencies = [
     "pandas",
 ]
 
+[dependency-groups]
+dev = [
+  "spyder-kernels==2.5.2",
+  "black",
+  "mypy",
+  "ruff",
+  "pytest",
+  "pytest-cov",
+]
+docs = [
+  "mkdocs-material>=9.0",
+  "mkdocstrings[python]>=0.24",
+]
+
 [tool.hatch.envs.default]
 python = "3.10"
 dependencies = [

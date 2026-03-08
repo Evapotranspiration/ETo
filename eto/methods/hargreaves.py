@@ -47,7 +47,7 @@ def hargreaves(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15):
     if isinstance(interp, str):
         ETo_Har_fill = self.tsreg(ETo_Har, self.freq, interp, maxgap)
         ETo_Har_fill.name = 'ETo_Har_interp_mm'
-        ETo = pd.concat([ETo_Har, ETo_Har_fill], axis=1).round(2)
+        ETo = pd.concat([ETo_Har, ETo_Har_fill], axis=1, sort=False).round(2)
     else:
         ETo = ETo_Har.round(2)
 
