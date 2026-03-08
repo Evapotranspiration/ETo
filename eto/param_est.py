@@ -148,6 +148,10 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
         self.est_val.loc[self.ts_param['T_dew'].isnull()] = self.est_val.loc[self.ts_param['T_dew'].isnull()] + 10000
         self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = (self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100 + self.ts_param['e_max'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_min']/100)/2
 
+        # e_a if only max humidity is known (FAO Eq 18)
+        self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
+        self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param['e_min'][self.ts_param['e_a'].isnull()] * self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_max']/100
+
         # self.ts_param['e_a'] if only mean humidity is known
         self.est_val.loc[self.ts_param['e_a'].isnull()] = self.est_val.loc[self.ts_param['e_a'].isnull()] + 10000
         self.ts_param.loc[self.ts_param['e_a'].isnull(), 'e_a'] = self.ts_param.loc[self.ts_param['e_a'].isnull(), 'RH_mean']/100*(self.ts_param['e_max'][self.ts_param['e_a'].isnull()] + self.ts_param['e_min'][self.ts_param['e_a'].isnull()])/2
@@ -173,7 +177,7 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
         hour_vec = df.index.hour
         b = (2*np.pi*(Day - 81))/364
         S_c = 0.1645*np.sin(2*b) - 0.1255*np.cos(b) - 0.025*np.sin(b)
-        w = np.pi/12*(((hour_vec+0.5) + 0.6666667*(TZ_lon - lon) + S_c) - 12)
+        w = np.pi/12*(((hour_vec+0.5) + 0.06667*(TZ_lon - lon) + S_c) - 12)
         w_1 = w - (np.pi*1)/24  # Need to update one day for different hourly periods
         w_2 = w + (np.pi*1)/24  # Need to update one day for different hourly periods
 
@@ -210,7 +214,14 @@ def param_est(self, df, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None, z
 
     # G
     self.est_val.loc[self.ts_param['G'].isnull()] = self.est_val.loc[self.ts_param['G'].isnull()] + 10
-    self.ts_param.loc[self.ts_param['G'].isnull(), 'G'] = 0
+    if 'h' in freq.lower():
+        G_null = self.ts_param['G'].isnull()
+        day_mask = G_null & (self.ts_param['R_n'] > 0)
+        night_mask = G_null & (self.ts_param['R_n'] <= 0)
+        self.ts_param.loc[day_mask, 'G'] = 0.1 * self.ts_param.loc[day_mask, 'R_n']
+        self.ts_param.loc[night_mask, 'G'] = 0.5 * self.ts_param.loc[night_mask, 'R_n']
+    else:
+        self.ts_param.loc[self.ts_param['G'].isnull(), 'G'] = 0
 
 
     ######

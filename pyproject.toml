@@ -7,7 +7,7 @@ name = "ETo"
 dynamic = ["version"]
 description = "Class and functions to estimate reference ET"
 readme = "README.rst"
-license = "Apache"
+license = "Apache-2.0"
 authors = [
     { name = "Mike Kittridge", email = "mullenkamp1@gmail.com" },
 ]
@@ -30,6 +30,20 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "pandas",
+]
+
+[dependency-groups]
+dev = [
+  "spyder-kernels==2.5.2",
+  "black",
+  "mypy",
+  "ruff",
+  "pytest",
+  "pytest-cov",
+]
+docs = [
+  "mkdocs-material>=9.0",
+  "mkdocstrings[python]>=0.24",
 ]
 
 [tool.hatch.envs.default]

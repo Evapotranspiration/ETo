@@ -49,7 +49,7 @@ def eto_fao(self, max_ETo=15, min_ETo=0, interp=False, maxgap=15):
     if isinstance(interp, str):
         ETo_FAO_fill = self.tsreg(ETo_FAO, self.freq, interp, maxgap)
         ETo_FAO_fill.name = 'ETo_FAO_interp_mm'
-        ETo = pd.concat([ETo_FAO, ETo_FAO_fill], axis=1).round(2)
+        ETo = pd.concat([ETo_FAO, ETo_FAO_fill], axis=1, sort=False).round(2)
     else:
         ETo = ETo_FAO.round(2)
 
