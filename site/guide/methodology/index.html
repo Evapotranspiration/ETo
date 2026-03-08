@@ -579,6 +579,89 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Parameter estimation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#atmospheric-pressure-p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Atmospheric pressure (P)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mean-temperature-t_mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mean temperature (T_mean)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actual-vapour-pressure-e_a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actual vapour pressure (e_a)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#incoming-solar-radiation-r_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incoming solar radiation (R_s)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#net-radiation-r_n" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Net radiation (R_n)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil-heat-flux-g" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil heat flux (G)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wind-speed-u_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wind speed (U_2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -916,6 +999,89 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Parameter estimation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#atmospheric-pressure-p" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Atmospheric pressure (P)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mean-temperature-t_mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mean temperature (T_mean)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actual-vapour-pressure-e_a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actual vapour pressure (e_a)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#incoming-solar-radiation-r_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incoming solar radiation (R_s)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#net-radiation-r_n" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Net radiation (R_n)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil-heat-flux-g" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil heat flux (G)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wind-speed-u_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wind speed (U_2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -974,15 +1140,57 @@
 <p>The FAO 56 Penman-Monteith equation is implemented in <code>eto_fao()</code>. It supports both daily and hourly time steps.</p>
 <p>Extensive documentation on the methods and concepts can be found in the <a href="http://www.fao.org/docrep/X0490E/X0490E00.htm">UN-FAO 56 paper</a>.</p>
 <h3 id="parameter-estimation">Parameter estimation<a class="headerlink" href="#parameter-estimation" title="Permanent link">&para;</a></h3>
-<p>When input data is incomplete, the package estimates missing parameters using the fallback chains defined in FAO 56. Parameters are estimated in a specific order, and each estimation step is tracked in the <code>est_val</code> quality array.</p>
-<p>The estimation chain for actual vapour pressure (e_a), for example:</p>
+<p>When input data is incomplete, the package estimates missing parameters using the fallback chains defined in FAO 56. Parameters are estimated in a specific order, and each estimation step is tracked in the <code>est_val</code> quality array. If a parameter is provided in the input data, the corresponding estimation is skipped entirely.</p>
+<p>The parameters are estimated in the following order:</p>
+<h4 id="atmospheric-pressure-p">Atmospheric pressure (P)<a class="headerlink" href="#atmospheric-pressure-p" title="Permanent link">&para;</a></h4>
+<p>If <code>P</code> is not provided, it is estimated from station elevation (<code>z_msl</code>):</p>
 <ol>
-<li>From dew point temperature (FAO Eq 14) — best</li>
-<li>From RH_min + RH_max (FAO Eq 17)</li>
-<li>From RH_max only (FAO Eq 18)</li>
-<li>From RH_mean (FAO Eq 19)</li>
-<li>From T_min (FAO Eq 48) — last resort</li>
+<li>P = 101.3 × ((293 - 0.0065 × z_msl) / 293)^5.26 (FAO Eq 7)</li>
 </ol>
+<h4 id="mean-temperature-t_mean">Mean temperature (T_mean)<a class="headerlink" href="#mean-temperature-t_mean" title="Permanent link">&para;</a></h4>
+<p>If <code>T_mean</code> is not provided (daily mode only — hourly requires it as input):</p>
+<ol>
+<li>T_mean = (T_max + T_min) / 2 (FAO Eq 9)</li>
+</ol>
+<h4 id="actual-vapour-pressure-e_a">Actual vapour pressure (e_a)<a class="headerlink" href="#actual-vapour-pressure-e_a" title="Permanent link">&para;</a></h4>
+<p><strong>Hourly mode:</strong></p>
+<p>If <code>e_a</code> is not provided, it is estimated from <code>RH_mean</code> (which is required for hourly):</p>
+<ol>
+<li>e_a = e°(T_mean) × RH_mean / 100</li>
+</ol>
+<p><strong>Daily mode:</strong></p>
+<p>The daily fallback chain tries each method in order, stopping at the first that fills all missing values:</p>
+<ol>
+<li>From dew point temperature T_dew (FAO Eq 14) — best quality</li>
+<li>From RH_min + RH_max (FAO Eq 17) — e_a = (e°(T_min) × RH_max + e°(T_max) × RH_min) / 200</li>
+<li>From RH_max only (FAO Eq 18) — e_a = e°(T_min) × RH_max / 100</li>
+<li>From RH_mean only (FAO Eq 19) — e_a = RH_mean / 100 × (e°(T_max) + e°(T_min)) / 2</li>
+<li>From T_min (FAO Eq 48) — e_a = e°(T_min) — last resort, assumes dew point ≈ T_min</li>
+</ol>
+<h4 id="incoming-solar-radiation-r_s">Incoming solar radiation (R_s)<a class="headerlink" href="#incoming-solar-radiation-r_s" title="Permanent link">&para;</a></h4>
+<p>Extraterrestrial radiation (R_a) is always computed from latitude and day of year (FAO Eq 21/28). Then, if <code>R_s</code> is not provided:</p>
+<ol>
+<li>From sunshine hours <code>n_sun</code> using the Angstrom formula (FAO Eq 35) — R_s = (a_s + b_s × n/N) × R_a</li>
+<li>From temperature range using the Hargreaves radiation formula (FAO Eq 50) — R_s = K_rs × (T_max - T_min)^0.5 × R_a</li>
+</ol>
+<h4 id="net-radiation-r_n">Net radiation (R_n)<a class="headerlink" href="#net-radiation-r_n" title="Permanent link">&para;</a></h4>
+<p>If <code>R_n</code> is not provided, it is computed from R_s:</p>
+<ol>
+<li>R_n = R_ns - R_nl, where R_ns = (1 - albedo) × R_s (FAO Eq 38) and R_nl is the net outgoing longwave radiation (FAO Eq 39 for daily, Eq 40 for hourly)</li>
+</ol>
+<h4 id="soil-heat-flux-g">Soil heat flux (G)<a class="headerlink" href="#soil-heat-flux-g" title="Permanent link">&para;</a></h4>
+<p>If <code>G</code> is not provided:</p>
+<ul>
+<li><strong>Daily</strong>: G = 0 (FAO Eq 42 — negligible for daily time steps)</li>
+<li><strong>Hourly daytime</strong> (R_n &gt; 0): G = 0.1 × R_n (FAO Eq 45)</li>
+<li><strong>Hourly nighttime</strong> (R_n ≤ 0): G = 0.5 × R_n (FAO Eq 46)</li>
+</ul>
+<h4 id="wind-speed-u_2">Wind speed (U_2)<a class="headerlink" href="#wind-speed-u_2" title="Permanent link">&para;</a></h4>
+<p>Wind speed at 2 m height is needed for the Penman-Monteith equation. If <code>U_z</code> is provided, it is converted:</p>
+<ol>
+<li>U_2 = U_z × 4.87 / ln(67.8 × z_u - 5.42) (FAO Eq 47)</li>
+</ol>
+<p>If <code>U_z</code> is not provided, a default of U_2 = 2 m/s is used (FAO recommendation for missing wind data).</p>
 <h2 id="hargreaves">Hargreaves<a class="headerlink" href="#hargreaves" title="Permanent link">&para;</a></h2>
 <p>The Hargreaves equation is a simplified method for estimating ETo using only temperature data. It is implemented in <code>eto_hargreaves()</code> and is only valid for daily time steps.</p>
 <p>The <a href="http://onlinecalc.sdsu.edu/onlinehargreaves.pdf">History and Evaluation of Hargreaves Evapotranspiration Equation</a> provides a detailed description and background.</p>
