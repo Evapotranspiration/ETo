@@ -27,6 +27,7 @@ ETo accepts meteorological data as a `dict[str, np.ndarray]` where each key is a
 
 - **Daily**: `T_min` and `T_max`
 - **Hourly**: `T_mean` and either `RH_mean` or `e_a`
+- **Monthly**: `T_min` and `T_max` (same as daily; G is estimated from consecutive monthly T_mean)
 
 All other parameters are estimated from the available data using FAO 56 fallback chains.
 
