@@ -6,6 +6,8 @@ import numpy as np
 from eto.param_est import param_est
 from eto.methods.ETo import eto_fao
 from eto.methods.hargreaves import hargreaves
+from eto.crop_coefficients import etc, etc_adj, kc_adjust
+from eto.methods.dual_kc import etc_dual
 
 
 class ETo(object):
@@ -32,7 +34,7 @@ class ETo(object):
 
     def __init__(self, data=None, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None,
                  z_u=2, K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23,
-                 day_of_year=None, hour=None, dates=None):
+                 day_of_year=None, hour=None, dates=None, validate=True):
 
         if data is None:
             pass
@@ -67,10 +69,13 @@ class ETo(object):
                     raise ValueError('hour length must match data array length')
 
             self.param_est(data, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb,
-                           day_of_year=day_of_year, hour=hour)
+                           day_of_year=day_of_year, hour=hour, validate=validate)
 
 
 ### Add in the ETo methods
 ETo.param_est = param_est
 ETo.eto_fao = eto_fao
 ETo.eto_hargreaves = hargreaves
+ETo.etc = etc
+ETo.etc_dual = etc_dual
+ETo.etc_adj = etc_adj
