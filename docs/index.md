@@ -1,17 +1,23 @@
 # ETo
 
-**Python package for calculating reference evapotranspiration (FAO 56)**
+**Python package for calculating reference and crop evapotranspiration (FAO 56)**
 
 ---
 
-ETo estimates reference evapotranspiration using the [UN-FAO 56 paper](http://www.fao.org/docrep/X0490E/X0490E00.htm) methodology. It requires a minimum of T_min and T_max for daily estimates or T_mean and RH_mean for hourly estimates, and uses all available meteorological parameters to improve accuracy.
+ETo estimates reference evapotranspiration (ETo) and crop evapotranspiration (ETc) using the [UN-FAO 56 paper](http://www.fao.org/docrep/X0490E/X0490E00.htm) methodology. It requires a minimum of T_min and T_max for daily estimates or T_mean and RH_mean for hourly estimates, and uses all available meteorological parameters to improve accuracy.
 
 ## Key Features
 
 - **FAO 56 Penman-Monteith** — the international standard for reference ET estimation
+- **ASCE standardization** — short (grass) and tall (alfalfa) reference crops
 - **Hargreaves method** — simplified daily ET when limited data is available
+- **Crop evapotranspiration** — single Kc (`etc`), dual Kc (`etc_dual`), and water stress adjustment (`etc_adj`)
+- **Built-in crop coefficients** — FAO 56 Table 12 Kc values for 23 major crops
 - **Automatic parameter estimation** — missing met parameters are estimated from available data using FAO 56 fallback chains
 - **Quality tracking** — `est_val` array records which parameters were estimated and at what quality level
+- **Derived outputs** — VPD, dew point temperature (back-calculated from e_a), clear-sky radiation
+- **Input validation** — configurable warnings for out-of-range meteorological values
+- **Daily, hourly, and monthly** time steps
 - **Minimal dependencies** — only requires NumPy
 
 ## Quick Example
@@ -32,13 +38,22 @@ dates = np.arange('2020-01-01', '2020-01-06', dtype='datetime64[D]')
 
 et = ETo(data, freq='D', z_msl=500, lat=-43.6, dates=dates)
 
-eto_fao = et.eto_fao()       # np.ndarray of daily ETo (mm)
-eto_har = et.eto_hargreaves() # np.ndarray of daily Hargreaves ETo (mm)
+eto_fao = et.eto_fao()        # np.ndarray of daily ETo (mm)
+eto_har = et.eto_hargreaves()  # np.ndarray of daily Hargreaves ETo (mm)
+
+# Crop ET with built-in crop coefficients
+etc = et.etc(crop='wheat_winter', stage='mid')  # ETc = Kc × ETo
+
+# Tall reference crop (ASCE alfalfa)
+etr = et.eto_fao(ref_crop='tall')
+
+# Access derived parameters
+vpd = et.ts_param['VPD']       # Vapour pressure deficit
 ```
 
 ## Next Steps
 
 - [Installation](getting-started/installation.md) — install ETo
 - [Quick Start](getting-started/quickstart.md) — complete walkthrough of a typical workflow
-- [User Guide](guide/usage.md) — detailed usage for daily and hourly estimation
+- [User Guide](guide/usage.md) — detailed usage for daily, hourly, and monthly estimation
 - [API Reference](reference/index.md) — full class and method reference

@@ -32,8 +32,8 @@ def hargreaves(self, max_ETo=15, min_ETo=0):
 
     ETo_Har = 0.0023*(self.ts_param['T_mean'] + 17.8)*((self.ts_param['T_max'] - self.ts_param['T_min']) **0.5)*self.ts_param['R_a']*0.408
 
-    ## Remove extreme values
+    ## Clamp negatives to min_ETo, NaN for suspect highs
+    ETo_Har = np.maximum(ETo_Har, min_ETo)
     ETo_Har[ETo_Har > max_ETo] = np.nan
-    ETo_Har[ETo_Har < min_ETo] = np.nan
 
     return np.round(ETo_Har, 2)

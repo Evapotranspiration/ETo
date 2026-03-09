@@ -27,3 +27,31 @@
     options:
       show_root_heading: true
       show_source: false
+
+## Crop Evapotranspiration (Single Kc)
+
+::: eto.crop_coefficients.etc
+    options:
+      show_root_heading: true
+      show_source: false
+
+## Dual Crop Coefficient
+
+::: eto.methods.dual_kc.etc_dual
+    options:
+      show_root_heading: true
+      show_source: false
+
+## Water Stress Adjustment
+
+::: eto.crop_coefficients.etc_adj
+    options:
+      show_root_heading: true
+      show_source: false
+
+## Kc Climate Adjustment
+
+::: eto.crop_coefficients.kc_adjust
+    options:
+      show_root_heading: true
+      show_source: false

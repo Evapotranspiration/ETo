@@ -79,3 +79,35 @@ print(et.est_val[:5])
 ```
 
 A value of `0` means all parameters were measured directly. Higher values indicate more estimation was needed. See the [Usage guide](../guide/usage.md#estimation-quality-tracking) for details on interpreting these values.
+
+## Derived parameters
+
+After parameter estimation, additional derived values are available:
+
+```python
+# Vapour pressure deficit
+vpd = et.ts_param['VPD']
+
+# Dew point temperature (back-calculated from e_a if not provided)
+tdew = et.ts_param['T_dew']
+```
+
+## Crop evapotranspiration
+
+Calculate ETc using built-in crop coefficients:
+
+```python
+# Single crop coefficient from FAO 56 Table 12
+etc = et.etc(crop='wheat_winter', stage='mid')  # ETc = 1.15 × ETo
+
+# Or with an explicit Kc value
+etc = et.etc(Kc=0.9)
+```
+
+## Tall reference crop
+
+Use the ASCE alfalfa reference instead of FAO grass:
+
+```python
+etr = et.eto_fao(ref_crop='tall')
+```
