@@ -5,6 +5,7 @@ Created on Sun May 13 09:45:39 2018
 @author: MichaelEK
 """
 import numpy as np
+from eto.util import is_hourly
 
 
 def hargreaves(self, max_ETo=15, min_ETo=0):
@@ -27,7 +28,7 @@ def hargreaves(self, max_ETo=15, min_ETo=0):
     ######
     ## ETo equation
 
-    if 'h' in self.freq.lower():
+    if is_hourly(self.freq):
         raise ValueError('Hargreaves should not be calculated at time frequencies of less than a day.')
 
     ETo_Har = 0.0023*(self.ts_param['T_mean'] + 17.8)*((self.ts_param['T_max'] - self.ts_param['T_min']) **0.5)*self.ts_param['R_a']*0.408

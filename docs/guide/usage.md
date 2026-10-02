@@ -56,7 +56,7 @@ et = ETo(data, freq='D', z_msl=500, lat=-43.6, day_of_year=day_of_year)
 For hourly data, `hour` (0-23) is also required:
 
 ```python
-et = ETo(data, freq='h', z_msl=500, lat=-43.6, lon=172, TZ_lon=173,
+et = ETo(data, freq='h', z_msl=500, lat=-43.6, lon=172, TZ_lon=180,
          day_of_year=day_of_year, hour=hour)
 ```
 
@@ -82,7 +82,7 @@ Providing more parameters (e.g. `R_s`, `RH_min`, `RH_max`, `U_z`) reduces the am
 
 ## Hourly estimation
 
-Hourly estimation requires `T_mean` and either `RH_mean` or `e_a`. The `lon` and `TZ_lon` parameters are also needed for solar time calculations:
+Hourly estimation requires `T_mean` and either `RH_mean` or `e_a`. The `lon` and `TZ_lon` parameters are also needed for solar time calculations. Both are **east-positive** decimal degrees, and `TZ_lon` is the centre meridian of the time zone the hours are given in (0 for UTC, 180 for NZST):
 
 ```python
 data = {
@@ -92,9 +92,23 @@ data = {
 }
 dates = np.arange('2020-06-15', '2020-06-17', dtype='datetime64[h]')
 
-et = ETo(data, freq='h', z_msl=500, lat=-43.6, lon=172, TZ_lon=173, dates=dates)
+et = ETo(data, freq='h', z_msl=500, lat=-43.6, lon=172, TZ_lon=180, dates=dates)
 eto = et.eto_fao()
 ```
+
+Each hour is labelled by the **start** of its period by default (`[hour, hour + 1)`); pass
+`time_label='end'` for period-ending labels (`(hour - 1, hour]`).
+
+At night FAO-56 takes the cloudiness ratio R_s/R_so from the period 2-3 hours before sunset. That value
+is carried from one evening to the next morning, so a long series computed in pieces needs it passed on:
+
+```python
+first = ETo(part1, freq='h', ..., rs_rso_init=None)   # warns if part1 starts at night
+second = ETo(part2, freq='h', ..., rs_rso_init=first.rs_rso_last)
+```
+
+`eto_fao(min_ETo=None, max_ETo=None, decimals=None)` returns the raw FAO-56 values (negative at night
+under dew, unrounded).
 
 !!! note
     Hargreaves should not be used at sub-daily frequencies. Calling `eto_hargreaves()` on hourly data will raise a `ValueError`.
@@ -129,8 +143,10 @@ eto = et.eto_fao()
 | `freq` | `'D'` for daily, `'h'` for hourly, `'M'` for monthly | `'D'` |
 | `z_msl` | Elevation above sea level (m) | `None` |
 | `lat` | Latitude (decimal degrees) | `None` |
-| `lon` | Longitude (decimal degrees) | `None` |
-| `TZ_lon` | Time zone centre longitude (decimal degrees) | `None` |
+| `lon` | Longitude (decimal degrees, east-positive) | `None` |
+| `TZ_lon` | Time zone centre longitude (decimal degrees, east-positive) | `None` |
+| `time_label` | Hourly: `'start'` or `'end'` of each hour's period | `'start'` |
+| `rs_rso_init` | Hourly: R_s/R_so carried in from a previous chunk | `None` |
 | `z_u` | Wind measurement height (m) | `2` |
 | `K_rs` | R_s coefficient (0.16 inland, 0.19 coastal) | `0.16` |
 | `a_s` | R_s Angstrom coefficient | `0.25` |

@@ -86,7 +86,16 @@ R_so is used to compute the cloudiness factor for net longwave radiation:
 - When default Angstrom coefficients are used (a_s=0.25, b_s=0.5): R_so = (0.75 + 2×10⁻⁵ × z_msl) × R_a (FAO Eq 37)
 - When custom a_s/b_s are provided: R_so = (a_s + b_s) × R_a (FAO Eq 36)
 
-The R_s/R_so ratio is computed safely — when R_so = 0 (nighttime hours), the ratio defaults to 1.0 to avoid division by zero.
+The R_s/R_so ratio is capped at 1. For daily data where R_so = 0 (polar night) it is 1.0. For hourly
+data at night (R_so = 0) it follows FAO-56: the ratio of the period 2-3 hours before sunset (solar time
+angle at the period midpoint within `ws - 0.79 <= w <= ws - 0.52`) is carried through the night. Before
+version 2.2.0 night hours used 1.0 (clear sky), which overstates net longwave loss on cloudy nights.
+
+The hourly solar time angle (FAO Eq 31) uses east-positive longitudes: `w = π/12 (t + 0.06667 (lon - TZ_lon) + Sc - 12)`,
+which is FAO's `Lz - Lm` written for east-positive degrees (FAO states both in degrees west of Greenwich).
+Before version 2.2.0 the package applied `TZ_lon - lon` to east-positive input, which put solar time
+about `2 (lon - TZ_lon) / 15` hours out. Solar time can fall on the neighbouring day (e.g. UTC labels at
+NZ longitudes); declination and sunset angle then use that day.
 
 #### Net radiation (R_n)
 

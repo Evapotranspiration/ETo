@@ -3,6 +3,7 @@
 Class to estimate reference ET (ETo) from the FAO 56 paper using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but utilizing the maximum number of available met parameters. The function prioritizes the estimation of specific parameters based on the available input data.
 """
 import numpy as np
+from eto.util import is_hourly
 from eto.param_est import param_est
 from eto.methods.ETo import eto_fao
 from eto.methods.hargreaves import hargreaves
@@ -23,18 +24,20 @@ class ETo(object):
         T_min, T_max, T_mean, T_dew, RH_min, RH_max, RH_mean, n_sun, U_z,
         P, e_a). All arrays must have the same length.
     freq : str
-        Time frequency: 'D' for daily, 'H' or 'h' for hourly.
+        Time frequency: 'D' for daily, 'h' (or 'H') for hourly, 'M' for monthly.
     day_of_year : np.ndarray of int, or None
         Day of year (1-366). Required if dates is not provided.
     hour : np.ndarray of int, or None
         Hour of day (0-23). Required for hourly frequency if dates is not provided.
     dates : np.ndarray of datetime64, or None
         Datetime array. Used to derive day_of_year and hour if they are not provided.
+    time_label, rs_rso_init
+        Hourly only; see :func:`eto.param_est.param_est`.
     """
 
     def __init__(self, data=None, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None,
                  z_u=2, K_rs=0.16, a_s=0.25, b_s=0.5, alb=0.23,
-                 day_of_year=None, hour=None, dates=None, validate=True):
+                 day_of_year=None, hour=None, dates=None, validate=True, time_label='start', rs_rso_init=None):
 
         if data is None:
             pass
@@ -51,7 +54,7 @@ class ETo(object):
             if dates is not None:
                 dates = np.asarray(dates)
                 day_of_year = (dates.astype('datetime64[D]') - dates.astype('datetime64[Y]')).astype(int) + 1
-                if 'h' in freq.lower():
+                if is_hourly(freq):
                     hour = (dates - dates.astype('datetime64[D]')).astype('timedelta64[h]').astype(int)
             elif day_of_year is not None:
                 day_of_year = np.asarray(day_of_year)
@@ -61,7 +64,7 @@ class ETo(object):
             # Validate temporal array lengths
             if len(day_of_year) != n:
                 raise ValueError('day_of_year length must match data array length')
-            if 'h' in freq.lower():
+            if is_hourly(freq):
                 if hour is None:
                     raise ValueError('hour array or dates must be provided for hourly frequency')
                 hour = np.asarray(hour)
@@ -69,7 +72,8 @@ class ETo(object):
                     raise ValueError('hour length must match data array length')
 
             self.param_est(data, freq, z_msl, lat, lon, TZ_lon, z_u, K_rs, a_s, b_s, alb,
-                           day_of_year=day_of_year, hour=hour, validate=validate)
+                           day_of_year=day_of_year, hour=hour, validate=validate,
+                           time_label=time_label, rs_rso_init=rs_rso_init)
 
 
 ### Add in the ETo methods

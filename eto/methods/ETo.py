@@ -3,20 +3,24 @@
 Function to estimate reference ET (ETo) from the FAO 56 paper using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but utilizing the maximum number of available met parameters.
 """
 import numpy as np
+from eto.util import is_hourly
 
 
-def eto_fao(self, max_ETo=15, min_ETo=0, ref_crop='short'):
+def eto_fao(self, max_ETo=15, min_ETo=0, ref_crop='short', decimals=2):
     """
     Function to estimate reference ET (ETo) from the `FAO 56 paper <http://www.fao.org/docrep/X0490E/X0490E00.htm>`_ [1]_ using a minimum of T_min and T_max for daily estimates and T_mean and RH_mean for hourly, but optionally utilising the maximum number of available met parameters.
 
     Parameters
     ----------
-    max_ETo : float or int
-        The max realistic value of ETo (mm).
-    min_ETo : float or int
-        The min realistic value of ETo (mm).
+    max_ETo : float, int or None
+        The max realistic value of ETo (mm); higher values become NaN. None disables the check.
+    min_ETo : float, int or None
+        The min realistic value of ETo (mm); lower values are raised to it. None keeps negative
+        values (raw FAO-56, e.g. night-time dew).
     ref_crop : str
         Reference crop type: 'short' (FAO 56 grass) or 'tall' (ASCE alfalfa).
+    decimals : int or None
+        Decimal places of the result; None returns it unrounded.
 
     Returns
     -------
@@ -31,7 +35,7 @@ def eto_fao(self, max_ETo=15, min_ETo=0, ref_crop='short'):
 
     ######
     ## ETo equation — select Cn and Cd based on ref_crop and frequency
-    if 'h' in self.freq.lower():
+    if is_hourly(self.freq):
         if ref_crop == 'tall':
             Cn = 66
             Cd = np.where(self.ts_param['R_n'] > 0, 0.25, 1.7)
@@ -49,7 +53,9 @@ def eto_fao(self, max_ETo=15, min_ETo=0, ref_crop='short'):
         ETo_FAO = (0.408*self.ts_param['delta']*(self.ts_param['R_n'] - self.ts_param['G']) + self.ts_param['gamma']*Cn/(self.ts_param['T_mean'] + 273)*self.ts_param['U_2']*(self.ts_param['e_s'] - self.ts_param['e_a']))/(self.ts_param['delta'] + self.ts_param['gamma']*(1 + Cd*self.ts_param['U_2']))
 
     ## Clamp negatives to min_ETo, NaN for suspect highs
-    ETo_FAO = np.maximum(ETo_FAO, min_ETo)
-    ETo_FAO[ETo_FAO > max_ETo] = np.nan
+    if min_ETo is not None:
+        ETo_FAO = np.maximum(ETo_FAO, min_ETo)
+    if max_ETo is not None:
+        ETo_FAO = np.where(ETo_FAO > max_ETo, np.nan, ETo_FAO)
 
-    return np.round(ETo_FAO, 2)
+    return ETo_FAO if decimals is None else np.round(ETo_FAO, decimals)
