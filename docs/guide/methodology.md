@@ -95,7 +95,10 @@ The hourly solar time angle (FAO Eq 31) uses east-positive longitudes: `w = π/1
 which is FAO's `Lz - Lm` written for east-positive degrees (FAO states both in degrees west of Greenwich).
 Before version 2.2.0 the package applied `TZ_lon - lon` to east-positive input, which put solar time
 about `2 (lon - TZ_lon) / 15` hours out. Solar time can fall on the neighbouring day (e.g. UTC labels at
-NZ longitudes); declination and sunset angle then use that day.
+NZ longitudes); declination and sunset angle then use that day. The period midpoint is assigned to its own day before
+the equation of time `Sc` is taken (FAO Eq 32-33 use J of the period): a period-ending label at hour 0 is the
+previous day's last hour. Before version 2.2.1 `Sc` came from the label's day there, so the same hour
+labelled by its start and by its end differed slightly (R_a by up to about 0.002 MJ m-2 h-1).
 
 #### Net radiation (R_n)
 

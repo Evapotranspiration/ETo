@@ -210,6 +210,12 @@ def param_est(self, data, freq='D', z_msl=None, lat=None, lon=None, TZ_lon=None,
         # be in any time zone (e.g. UTC), so the solar time can fall on the previous or next day:
         # the declination and sunset angle use that solar day.
         t_mid = np.asarray(hour, dtype=np.float64) + (0.5 if time_label == 'start' else -0.5)
+        # The midpoint belongs to its own day: a period-ending label at hour 0 is the previous day's last
+        # hour, so the equation of time (Eq 32-33, J of the period) uses that day, as the same hour labelled
+        # by its start does.
+        mid_shift = np.floor(t_mid/24)
+        Day = Day + mid_shift
+        t_mid = t_mid - 24*mid_shift
         b = (2*np.pi*(Day - 81))/364
         S_c = 0.1645*np.sin(2*b) - 0.1255*np.cos(b) - 0.025*np.sin(b)
         # lon - TZ_lon wrapped to [-180, 180): the same place given as 183.5 or -176.5 is the same offset.

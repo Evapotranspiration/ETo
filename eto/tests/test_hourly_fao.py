@@ -243,3 +243,21 @@ def test_sunrise_and_sunset_hours_integrate_only_the_sunlit_part():
         w = np.pi / 12 * (((t + 0.06667 * 171.5 + sc0) % 24) - 12)
         inst = 0.082 * dr * np.maximum(np.sin(phi) * np.sin(delta) + np.cos(phi) * np.cos(delta) * np.cos(w), 0)
         assert ra[h] == pytest.approx(inst.mean() * 60, abs=2e-3), h
+
+
+def test_both_labellings_of_the_same_hours_agree_across_midnight():
+    # Two January days at a Canterbury point, labelled by UTC timestamps as a real series is: the hour
+    # 23:00-24:00 is 'start' 23 on day 15 and 'end' 0 on day 16. Every quantity must match exactly,
+    # including the equation of time, which once came from the end label's day (16) instead of the
+    # midpoint's (15).
+    n = 48
+    data = {'T_mean': np.full(n, 20.0), 'RH_mean': np.full(n, 60.0), 'U_z': np.full(n, 2.0),
+            'R_s': np.full(n, 0.5)}
+    start = np.datetime64('2000-01-15T00', 'h') + np.arange(n)
+    end = start + np.timedelta64(1, 'h')
+    kw = {'z_msl': 300, 'lat': -43.5, 'lon': 171.5, 'TZ_lon': 0.0, 'rs_rso_init': 1.0}
+    a = ETo(data, 'h', dates=start, time_label='start', **kw)
+    b = ETo(data, 'h', dates=end, time_label='end', **kw)
+    np.testing.assert_allclose(b.ts_param['R_a'], a.ts_param['R_a'], rtol=1e-13, atol=0)
+    np.testing.assert_allclose(b.eto_fao(min_ETo=None, max_ETo=None, decimals=None),
+                               a.eto_fao(min_ETo=None, max_ETo=None, decimals=None), rtol=1e-13, atol=0)
